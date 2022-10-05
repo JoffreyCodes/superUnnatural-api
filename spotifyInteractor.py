@@ -4,6 +4,8 @@ import spotipy
 import os
 from dotenv import load_dotenv, find_dotenv
 from spotipy import SpotifyOAuth
+import requests
+
 
 load_dotenv(find_dotenv())
 APP_CLIENT_ID = os.getenv('APP_CLIENT_ID')
@@ -74,3 +76,16 @@ def parse_playlist_track_ids(tracks):
         track = item['track']
         track_list.append(track['id'])
     return track_list
+
+
+def get_track_embed(track_id):
+    URL = f"https://open.spotify.com/embed/track/{track_id}?utm_source=generator"
+    # payload = {}
+    # headers = {
+    #     # 'Cookie': SN_COOKIE
+    # }
+    response = requests.request(
+        "GET", URL)
+    return response
+    # data = response.json()['data']
+    # return data['feed']

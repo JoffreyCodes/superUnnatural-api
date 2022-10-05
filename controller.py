@@ -12,6 +12,24 @@ def get_sn_feed():
     sn_feed = sn.fetchSNData()
     return sn.generateAPI(sn_feed)
 
+
+def get_sp_album_color(track_id):
+    MATCH_TEXT = "style=\"--background-color:"
+    LEN_HEX_COLOR = 7
+    track_embed = get_track_embed(track_id)
+    text = track_embed.text
+    found = text.find(MATCH_TEXT)
+    left_bound_idx = found+len(MATCH_TEXT)
+    right_bound_idx = left_bound_idx + LEN_HEX_COLOR
+    color_hex = text[left_bound_idx:right_bound_idx]
+    obj = {'data': {'color': color_hex}}
+    return obj
+
+
+def get_track_embed(track_id):
+    return spi.get_track_embed(track_id)
+
+
 # TODO: Implement Pagination: 20 Consecutive calls are made for length of snFeed, implement
 # iterator function when user requests for more of the feed in ui,
 # or implement multithreading that does not impact the order of

@@ -26,5 +26,11 @@ def main():
     return jsonify(api)
 
 
+@app.route('/getColor/<trackId>')
+def color(trackId):
+    res = ctr.get_sp_album_color(trackId)
+    return jsonify(res)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
