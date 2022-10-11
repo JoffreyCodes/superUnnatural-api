@@ -41,6 +41,9 @@ class SnFetcher:
             itemDict['description'] = workout['description']
             itemDict['workoutType'] = workout['workout_type']
             itemDict['isFavorite'] = workout['is_favorite']
+            itemDict['launchDate'] = workout['launch_date']
+            itemDict['intensity'] = workout['intensity_id']
+            itemDict['duration'] = workout['duration']
 
             # Access workout --> user object
             user = workout['user']
