@@ -13,6 +13,11 @@ def get_sn_feed():
     return sn.generateAPI(sn_feed)
 
 
+def get_sn_feed_id(sessionId):
+    sn_feed = sn.fetchSNDataWithSessionId(sessionId)
+    return sn.generateAPI(sn_feed)
+
+
 def get_sp_album_color(track_id):
     MATCH_TEXT = "style=\"--background-color:"
     LEN_HEX_COLOR = 7

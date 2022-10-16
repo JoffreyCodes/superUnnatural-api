@@ -24,6 +24,17 @@ class SnFetcher:
         data = response.json()['data']
         return data['feed']
 
+    def fetchSNDataWithSessionId(sessionId):
+        snFeedUrl = SN_FEED_API
+        payload = {}
+        headers = {
+            'Cookie': 'session_id=' + sessionId
+        }
+        response = requests.request(
+            "GET", snFeedUrl, headers=headers, data=payload)
+        data = response.json()['data']
+        return data['feed']
+
     def fetchSNDatafile():
         with open('feed.json', 'r') as feed:
             data = json.load(feed)['data']

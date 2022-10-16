@@ -26,6 +26,12 @@ def main():
     return jsonify(api)
 
 
+@app.route('/sessionId/<sessionId>')
+def main_with_id(sessionId):
+    api = ctr.get_sn_feed_id(sessionId)
+    return jsonify(api)
+
+
 @app.route('/getColor/<trackId>')
 def color(trackId):
     res = ctr.get_sp_album_color(trackId)
