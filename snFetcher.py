@@ -1,44 +1,29 @@
 import requests
-import json
 import os
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
-APP_CLIENT_ID = os.getenv('APP_CLIENT_ID')
-APP_CLIENT_SECRET = os.getenv('APP_CLIENT_SECRET')
-SN_COOKIE = os.getenv('SN_COOKIE')
 SN_FEED_API = os.getenv('SN_FEED_API')
 SPOTIFY_ID_LEN = 22
 
 
 class SnFetcher:
 
-    def fetchSNData():
-        snFeedUrl = SN_FEED_API
-        payload = {}
-        headers = {
-            'Cookie': SN_COOKIE
-        }
+    def getTrackEmbed(track_id):
+        URL = f"https://open.spotify.com/embed/track/{track_id}?utm_source=generator"
         response = requests.request(
-            "GET", snFeedUrl, headers=headers, data=payload)
-        data = response.json()['data']
-        return data['feed']
+            "GET", URL)
+        return response
 
     def fetchSNDataWithSessionId(sessionId):
-        snFeedUrl = SN_FEED_API
         payload = {}
         headers = {
             'Cookie': 'session_id=' + sessionId
         }
         response = requests.request(
-            "GET", snFeedUrl, headers=headers, data=payload)
+            "GET", SN_FEED_API, headers=headers, data=payload)
         data = response.json()['data']
         return data['feed']
-
-    def fetchSNDatafile():
-        with open('feed.json', 'r') as feed:
-            data = json.load(feed)['data']
-            return data['feed']
 
     def generateAPI(feed):
         apiFeed = []
