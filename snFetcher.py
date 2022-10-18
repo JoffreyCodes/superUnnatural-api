@@ -27,6 +27,10 @@ class SnFetcher:
 
     def generateAPI(feed):
         apiFeed = []
+        firstName = feed[0]['author']['first_name']
+        lastName = feed[0]['author']['last_name']
+
+        print(firstName)
         spotifyUrlLen = len('https://open.spotify.com/playlist/')
         for item in feed:
             itemDict = {}
@@ -52,4 +56,12 @@ class SnFetcher:
             itemDict['spotifyPlaylistId'] = spotifyUrl
 
             apiFeed.append(itemDict)
-        return {'data': apiFeed}
+        obj = {
+            'data': apiFeed,
+            'user':
+                {
+                    'firstName': firstName,
+                    'lastName': lastName
+                }
+        }
+        return obj
