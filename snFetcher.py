@@ -30,7 +30,6 @@ class SnFetcher:
         firstName = feed[0]['author']['first_name']
         lastName = feed[0]['author']['last_name']
 
-        print(firstName)
         spotifyUrlLen = len('https://open.spotify.com/playlist/')
         for item in feed:
             itemDict = {}
