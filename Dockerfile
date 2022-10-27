@@ -1,5 +1,5 @@
 # init a base image (Alpine is small Linux distro)
-FROM python:3.7.5
+FROM python:3.7.5-slim
 # update pip to minimize dependency errors 
 RUN pip install --upgrade pip
 # define the present working directory
