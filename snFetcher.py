@@ -34,6 +34,7 @@ class SnFetcher:
         for item in feed:
             itemDict = {}
             itemDict['title'] = item['workout']['title']
+            itemDict['trackIdList'] = item['workout']['title']
 
             # Access workout object
             workout = item['workout']
@@ -43,6 +44,11 @@ class SnFetcher:
             itemDict['launchDate'] = workout['launch_date']
             itemDict['intensity'] = workout['intensity_id']
             itemDict['duration'] = workout['duration']
+
+            # Access body object
+            body = item['body']
+            itemDict['workoutId'] = body['id']
+            itemDict['snSongIdList'] = body['songs']
 
             # Access workout --> user object
             user = workout['user']
