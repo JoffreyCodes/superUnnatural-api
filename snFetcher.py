@@ -47,7 +47,7 @@ class SnFetcher:
 
             # Access body object
             body = item['body']
-            itemDict['workoutId'] = body['id']
+            itemDict['workoutId'] = body['workout_id']
             itemDict['snSongIdList'] = body['songs']
 
             # Access workout --> user object

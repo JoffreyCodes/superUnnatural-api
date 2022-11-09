@@ -42,43 +42,62 @@ def color(trackId):
     return jsonify(res)
 
 
-@app.route('/userNotes', methods=['GET'])
-def userNotes():
-    form = request.form
-    snUserId = form.get('SnUserId')
+@app.route('/userNotes/<spId>', methods=['GET'])
+def userNotes(spId):
     cur = mysql.connection.cursor()
     if request.method == 'GET':
         cur.execute('\
-            SELECT SnTrackId FROM notes \
-            WHERE SnUserId = %s \
-            ', (snUserId)
-        )
+            SELECT SnTrackId \
+            FROM notes \
+            WHERE SpUserId = %s\
+            ', [spId])
         fetchedData = cur.fetchall()
-        return jsonify(fetchedData)
+    return jsonify(fetchedData)
 
 
-@app.route('/userNote', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/userNote/<spId>/<songId>', methods=['GET'])
+def getUserNote(spId, songId):
+    cur = mysql.connection.cursor()
+    if request.method == 'GET':
+        cur.execute('\
+            SELECT * \
+            FROM notes \
+            WHERE SpUserId = %s AND SnTrackID = %s \
+            ORDER BY Created DESC \
+            ', [spId, songId])
+        fetchedData = cur.fetchall()
+    return jsonify(fetchedData)
+
+
+@app.route('/delUserNote/<noteId>', methods=['DELETE'])
+def delUserNote(noteId):
+    cur = mysql.connection.cursor()
+    if request.method == 'DELETE':
+        print(noteId)
+        cur.execute(' \
+            DELETE FROM Notes \
+            WHERE NoteId = %s \
+            ', [noteId]
+        )
+        mysql.connection.commit()
+        cur.close()
+    return jsonify({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/userNote', methods=['POST', 'PUT'])
 def userNote():
     form = request.form
-    commentId = form.get('CommentId')
-    snUserId = form.get('SnUserId')
+    noteId = form.get('NoteId')
+    spUserId = form.get('SpUserId')
     snWorkoutId = form.get('SnWorkoutId')
     snTrackId = form.get('SnTrackId')
     content = form.get('Content')
     cur = mysql.connection.cursor()
-    if request.method == 'GET':
+    if request.method == 'POST':
         cur.execute('\
-            SELECT * FROM notes \
-            WHERE SnTrackId = %s AND SnUserId = %s \
-            ', (snTrackId, snUserId)
-        )
-        fetchedData = cur.fetchall()
-        return jsonify(fetchedData)
-    elif request.method == 'POST':
-        cur.execute('\
-            INSERT INTO Notes(SnUserId,SnWorkoutId, SnTrackId, Content) \
+            INSERT INTO Notes(SpUserId,SnWorkoutId, SnTrackId, Content) \
             VALUES(%s,%s,%s,%s) \
-            ', (snUserId, snWorkoutId, snTrackId, content)
+            ', [spUserId, snWorkoutId, snTrackId, content]
         )
         mysql.connection.commit()
         cur.close()
@@ -86,16 +105,8 @@ def userNote():
         cur.execute('\
             UPDATE Notes \
             SET Content = %s \
-            WHERE CommentId= %s \
-            ', (content, commentId)
-        )
-        mysql.connection.commit()
-        cur.close()
-    elif request.method == 'DELETE':
-        cur.execute(' \
-            DELETE FROM Notes \
-            WHERE CommentId = %s \
-            ', (commentId)
+            WHERE NoteId= %s \
+            ', [content, noteId]
         )
         mysql.connection.commit()
         cur.close()
