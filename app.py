@@ -73,7 +73,6 @@ def getUserNote(spId, songId):
 def delUserNote(noteId):
     cur = mysql.connection.cursor()
     if request.method == 'DELETE':
-        print(noteId)
         cur.execute(' \
             DELETE FROM Notes \
             WHERE NoteId = %s \
@@ -114,4 +113,4 @@ def userNote():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run()
