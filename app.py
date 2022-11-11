@@ -48,7 +48,7 @@ def userNotes(spId):
     if request.method == 'GET':
         cur.execute('\
             SELECT SnTrackId \
-            FROM notes \
+            FROM Notes \
             WHERE SpUserId = %s\
             ', [spId])
         fetchedData = cur.fetchall()
@@ -61,7 +61,7 @@ def getUserNote(spId, songId):
     if request.method == 'GET':
         cur.execute('\
             SELECT * \
-            FROM notes \
+            FROM Notes \
             WHERE SpUserId = %s AND SnTrackID = %s \
             ORDER BY Created DESC \
             ', [spId, songId])
