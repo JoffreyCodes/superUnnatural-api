@@ -57,43 +57,43 @@ CREATE TABLE Workouts (
 );
 
 CREATE TABLE Classic (
-WorkoutId INT,
-MaxTargets INT,
-MaxTriangles INT,
-MaxKneeStrikes INT,
-MaxScore INT,
-CONSTRAINT pk_Classic_WorkoutId PRIMARY KEY (WorkoutId),
-CONSTRAINT fk_Classic_WorkoutId FOREIGN KEY (WorkoutId)
-	REFERENCES Workouts(WorkoutId)
-    ON UPDATE CASCADE ON DELETE CASCADE
+	WorkoutId INT,
+	MaxTargets INT,
+	MaxTriangles INT,
+	MaxKneeStrikes INT,
+	MaxScore INT,
+	CONSTRAINT pk_Classic_WorkoutId PRIMARY KEY (WorkoutId),
+	CONSTRAINT fk_Classic_WorkoutId FOREIGN KEY (WorkoutId)
+		REFERENCES Workouts(WorkoutId)
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Boxing (
-WorkoutId INT,
-MaxTargets INT,
-MaxDodges INT,
-MaxKneeStrikes INT,
-MaxScore INT,
-CONSTRAINT pk_Boxing_WorkoutId PRIMARY KEY (WorkoutId),
-CONSTRAINT fk_Boxing_WorkoutId FOREIGN KEY (WorkoutId)
-	REFERENCES Workouts(WorkoutId)
-    ON UPDATE CASCADE ON DELETE CASCADE
+	WorkoutId INT,
+	MaxTargets INT,
+	MaxDodges INT,
+	MaxKneeStrikes INT,
+	MaxScore INT,
+	CONSTRAINT pk_Boxing_WorkoutId PRIMARY KEY (WorkoutId),
+	CONSTRAINT fk_Boxing_WorkoutId FOREIGN KEY (WorkoutId)
+		REFERENCES Workouts(WorkoutId)
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Meditation (
-WorkoutId INT,
-CONSTRAINT pk_Meditation_WorkoutId PRIMARY KEY (WorkoutId),
-CONSTRAINT fk_Meditation_WorkoutId FOREIGN KEY (WorkoutId)
-	REFERENCES Workouts(WorkoutId)
-    ON UPDATE CASCADE ON DELETE CASCADE
+	WorkoutId INT,
+	CONSTRAINT pk_Meditation_WorkoutId PRIMARY KEY (WorkoutId),
+	CONSTRAINT fk_Meditation_WorkoutId FOREIGN KEY (WorkoutId)
+		REFERENCES Workouts(WorkoutId)
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Stretch (
-WorkoutId INT,
-CONSTRAINT pk_Stretch_WorkoutId PRIMARY KEY (WorkoutId),
-CONSTRAINT fk_Stretch_WorkoutId FOREIGN KEY (WorkoutId)
-	REFERENCES Workouts(WorkoutId)
-    ON UPDATE CASCADE ON DELETE CASCADE
+	WorkoutId INT,
+	CONSTRAINT pk_Stretch_WorkoutId PRIMARY KEY (WorkoutId),
+	CONSTRAINT fk_Stretch_WorkoutId FOREIGN KEY (WorkoutId)
+		REFERENCES Workouts(WorkoutId)
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Genres (	
