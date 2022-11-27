@@ -2,6 +2,8 @@ import controller as ctr
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_mysqldb import MySQL
+import os
+
 
 '''
 This app features beackend features that makes calls to 
