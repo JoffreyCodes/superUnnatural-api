@@ -1,4 +1,4 @@
-from snFetcher import SnFetcher as sn
+from services.snFetcher import SnFetcher as sn
 
 
 def get_sn_feed():
