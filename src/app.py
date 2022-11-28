@@ -1,8 +1,11 @@
-import controllers.controller as ctr
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from routes.notesBp import notesBp
+from routes.spotifyBp import spotifyBp
+from routes.supernaturalBp import supernaturalBp
+
+
 from models.note import db
 
 
@@ -20,10 +23,12 @@ def create_app():
     CORS(app)
     return app
 
-
 app = create_app()  # Creating the app
 # Registering the blueprint
 app.register_blueprint(notesBp, url_prefix='/notes')
+app.register_blueprint(spotifyBp, url_prefix='/spotify')
+app.register_blueprint(supernaturalBp, url_prefix='/supernatural')
+
 migrate = Migrate(app, db)  # Initializing the migration
 
 @app.route('/healthCheck')
@@ -32,16 +37,10 @@ def health_check():
     return jsonify(message)
 
 
-@app.route('/sessionId/<sessionId>')
-def main_with_id(sessionId):
-    api = ctr.get_sn_feed_id(sessionId)
-    return jsonify(api)
-
-
-@app.route('/getColor/<trackId>')
-def color(trackId):
-    res = ctr.get_sp_album_color(trackId)
-    return jsonify(res)
+# @app.route('/sessionId/<sessionId>')
+# def main_with_id(sessionId):
+#     api = ctr.get_sn_feed_id(sessionId)
+#     return jsonify(api)
 
 
 if __name__ == "__main__":
