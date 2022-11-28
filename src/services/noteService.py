@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from models.note import db, engine
+from database import db, engine
 
 def create_logic():
     try:
