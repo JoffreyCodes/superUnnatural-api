@@ -1,8 +1,6 @@
 import requests
 import os
-from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
 SN_FEED_API = os.getenv('SN_FEED_API')
 SPOTIFY_ID_LEN = 22
 
