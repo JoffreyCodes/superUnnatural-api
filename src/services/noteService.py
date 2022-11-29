@@ -46,7 +46,7 @@ def doGetTrackNotes(spId, snTrackId):
                 ORDER BY Created DESC;'
         connection = engine.connect()
         res = connection.execute(stmt)
-        return jsonify([dict(r) for r in res])
+        return res
 
 def doGetUserNotedTrackIdsList(spId):
     if request.method == 'GET':
@@ -54,6 +54,6 @@ def doGetUserNotedTrackIdsList(spId):
             SELECT DISTINCT SnTrackId \
             FROM Notes \
             WHERE SpUserId = {spId};'
-    connection = engine.connect()
-    res = connection.execute(stmt)
-    return jsonify([dict(r) for r in res])
+        connection = engine.connect()
+        res = connection.execute(stmt)
+        return res

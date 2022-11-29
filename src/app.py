@@ -3,7 +3,7 @@ from flask_cors import CORS
 from routes.notesBp import notesBp
 from routes.spotifyBp import spotifyBp
 from routes.supernaturalBp import supernaturalBp
-import database as database
+import database as db
 
 
 '''
@@ -16,7 +16,7 @@ def create_app():
     app = Flask(__name__)  # flask app object
     app.config.from_pyfile('config.py')
 
-    database.initialize(app)  # Initializing the database
+    db.initialize(app)  # Initializing the database
     CORS(app)
     return app
 
@@ -26,7 +26,7 @@ app.register_blueprint(notesBp, url_prefix='/notes')
 app.register_blueprint(spotifyBp, url_prefix='/spotify')
 app.register_blueprint(supernaturalBp, url_prefix='/supernatural')
 
-migrate = database.migrate(app)  # Initializing the migration for model db changes
+migrate = db.migrate(app)  # Initializing the migration for model db changes
 
 @app.route('/healthCheck')
 def health_check():

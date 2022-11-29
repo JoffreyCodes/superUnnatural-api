@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv, find_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 load_dotenv(find_dotenv())
