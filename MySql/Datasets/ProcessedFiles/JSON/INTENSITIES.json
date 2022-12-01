@@ -1,0 +1,26 @@
+[
+  {
+    "SN ID (from Intensity)": "1",
+    "Name (from Intensity)": "Low"
+  },
+  {
+    "SN ID (from Intensity)": "2",
+    "Name (from Intensity)": "Medium"
+  },
+  {
+    "SN ID (from Intensity)": "3",
+    "Name (from Intensity)": "High"
+  },
+  {
+    "SN ID (from Intensity)": "4",
+    "Name (from Intensity)": "Meditation"
+  },
+  {
+    "SN ID (from Intensity)": "5",
+    "Name (from Intensity)": "Stretch"
+  },
+  {
+    "SN ID (from Intensity)": "0",
+    "Name (from Intensity)": "Auto Intensity"
+  }
+]

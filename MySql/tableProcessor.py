@@ -1,6 +1,8 @@
 import csv
+import json
 '''
-Processes airtable csv with focus on the Workouts view. 
+Processes airtable csv with focus on the Workouts view.
+Source Data: https://airtable.com/shrcuUWyR76gcdbqw/tblMuteBHqIjaYplx/viwLtKByxy8UB2JG2 
 Location table is handled separately.
 The INPUT_WORKOUTS_FILE csv expects the following columns:
     Name                    Description                 Date
@@ -17,11 +19,15 @@ The INPUT_WORKOUTS_FILE csv expects the following columns:
 INPUT_WORKOUTS_FILE = './Datasets/WORKOUTS_FLATTENED_11_29_2022.csv'
 INPUT_LOCATIONS_FILE = './Datasets/LOCATIONS_FLATTENED_11_29_2022.csv'
 PATH = "./Datasets/ProcessedFiles/"
+PROCESS_JSON = True
+PROCESS_CSV = False
 
 def main():
     runProcessor()
     for table in createInstrxn.keys():
-        createCSV(createInstrxn[table]['filename'], createInstrxn[table]['headers'], createInstrxn[table]['items'])
+        if(PROCESS_JSON): createJSON(createInstrxn[table]['filename'], createInstrxn[table]['items'])
+        if(PROCESS_CSV): createCSV(createInstrxn[table]['filename'], createInstrxn[table]['headers'], createInstrxn[table]['items'])
+
 
 def runLocationsProcessor():
     with open(INPUT_LOCATIONS_FILE, mode='r', encoding="utf-8-sig") as csv_file:
@@ -48,7 +54,6 @@ def getHeaders():
 def get(val):
     headers = getHeaders()
     return headers.get(val)
-
 
 def runProcessor():
     # process locations using locations data file
@@ -130,28 +135,30 @@ def processTable(row, table):
         pkSet.add(pk)
 
 def processWorkoutType(row):
+    # process all rows as a workout
     processRow(row, createInstrxn['workouts']['items'], createInstrxn['workouts']['headers'])
+    # process subcategorical workouts by type
     workoutType = row[get('Workout Type')]
-    if(workoutType == 'classic'):
-        processRow(row, createInstrxn['classic_workouts']['items'], createInstrxn['classic_workouts']['headers'])
-    if(workoutType == 'boxing'):
-        processRow(row, createInstrxn['boxing_workouts']['items'], createInstrxn['boxing_workouts']['headers'])
-    if(workoutType == 'meditation'):
-        processRow(row, createInstrxn['meditation_workouts']['items'], createInstrxn['meditation_workouts']['headers'])
-    if(workoutType == 'stretch'):
-        processRow(row, createInstrxn['stretch_workouts']['items'], createInstrxn['stretch_workouts']['headers'])
+    workoutTypes = ['classic', 'boxing', 'meditation', 'stretch']
+    for type in workoutTypes:
+        if workoutType == type:
+            processRow(row, createInstrxn[type]['items'], createInstrxn[type]['headers'])
 
 def processRow(row, list, headers):
-    createInstrxn = {}
+    entry = {}
     for header in headers:
-        createInstrxn[header] = row[get(header)] if row[get(header)] != '' else 0
-    list.append(createInstrxn)
+        entry[header] = row[get(header)] if row[get(header)] != '' else 0
+    list.append(entry)
 
 def createCSV(filename, headers, items):
-    with open(PATH + filename, "w", newline="", encoding="utf-8-sig") as f:
+    with open(PATH + 'CSV/' + filename, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, headers)
         writer.writeheader()
         writer.writerows(items)
+
+def createJSON(filename, items):
+    with open(PATH + 'JSON/' + filename + '.json', "w") as out:
+        json.dump(items, out, indent=2)
 
 createInstrxn = {
     'workouts': {
@@ -161,37 +168,37 @@ createInstrxn = {
             'Date', 'Workout Type', 'Spotify Link', 
             'SN ID (from Coach)', 'SN ID (from Intensity)' ],
         'primary_key': 'SN ID',
-        'filename' : 'WORKOUTS.csv'
+        'filename' : 'WORKOUTS'
     },
-    'classic_workouts': {
+    'classic': {
         'items' : [],
         'headers' : [
             'SN ID', 'Max Targets', 'Triangles',
             'Max Knee Strikes', 'Max Score', 
             'Points Per Minute', 'Targets Per Minute' ],
         'primary_key': 'SN ID', 
-        'filename' : 'CLASSIC_WORKOUTS.csv'
+        'filename' : 'CLASSIC_WORKOUTS'
     },
-    'boxing_workouts': {
+    'boxing': {
         'items' : [],
         'headers' : [
             'SN ID', 'Max Targets', 'Max Dodges',
             'Max Knee Strikes', 'Max Score', 
             'Points Per Minute', 'Targets Per Minute' ],
         'primary_key': 'SN ID', 
-        'filename' : 'BOXING_WORKOUTS.csv'
+        'filename' : 'BOXING_WORKOUTS'
     },
-    'meditation_workouts': {
+    'meditation': {
         'items' : [],
         'headers' : ['SN ID'],
         'primary_key': 'SN ID', 
-        'filename' : 'MEDITATION_WORKOUTS.csv'
+        'filename' : 'MEDITATION_WORKOUTS'
     },
-    'stretch_workouts': {
+    'stretch': {
         'items' : [],
         'headers' : ['SN ID'],   
         'primary_key': 'SN ID', 
-        'filename' : 'STRETCH_WORKOUTS.csv'
+        'filename' : 'STRETCH_WORKOUTS'
     },
     'songs': {
         'pk_set': set(),
@@ -200,7 +207,7 @@ createInstrxn = {
             'SN ID (from Songs)','Song Name (from Songs)',
             'Artist (from Songs)', 'Length (from Songs)' ], 
         'primary_key': 'SN ID (from Songs)',
-        'filename' : 'SONGS.csv'
+        'filename' : 'SONGS'
     },
     'coaches': {
         'pk_set': set(),
@@ -209,7 +216,7 @@ createInstrxn = {
             'SN ID (from Coach)',
             'Name (from Coach)'], 
         'primary_key': 'SN ID (from Coach)',
-        'filename' : 'COACHES.csv'
+        'filename' : 'COACHES'
     },
     'genres': {
         'pk_set': set(),
@@ -218,7 +225,7 @@ createInstrxn = {
             'SN ID (from Genre)',
             'Name (from Genre)'], 
         'primary_key': 'SN ID (from Genre)',
-        'filename' : 'GENRES.csv'
+        'filename' : 'GENRES'
     },
     'intensities': {
         'pk_set': set(),
@@ -227,27 +234,27 @@ createInstrxn = {
             'SN ID (from Intensity)',
             'Name (from Intensity)'], 
         'primary_key': 'SN ID (from Intensity)',
-        'filename' : 'INTENSITIES.csv'
+        'filename' : 'INTENSITIES'
     },
     'locations': {
         'items' : [],
         'headers' : [
             'Name', 'Screenshot',
             'SN ID', 'Near the Ground'], 
-        'filename' : 'LOCATIONS.csv'
+        'filename' : 'LOCATIONS'
     },
     'songmaps': {
         'items' : [],
         'headers' : [
             'SN ID', 'SN ID (from Songs)',
             'SN ID (from Locations)'], 
-        'filename' : 'SONGMAPSLIST.csv'
+        'filename' : 'SONGMAPSLIST'
     },
     'genrelist': {
         'items' : [],
         'headers' : [
             'SN ID', 'SN ID (from Genre)'], 
-        'filename' : 'GENRELIST.csv'
+        'filename' : 'GENRELIST'
     }
 }
 
