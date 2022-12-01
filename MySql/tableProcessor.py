@@ -1,34 +1,18 @@
 import csv
 '''
-Name
-Description
-Date
-Name (from Intensity)
-SN ID (from Intensity)
-Chew Rating
-Length
-Name (from Coach)
-SN ID (from Coach)
-Name (from Genre)
-SN ID (from Genre)
-Song Name (from Songs)
-Artist (from Songs)
-Length (from Songs)
-SN ID (from Songs)
-Spotify Link
-SN ID
-Triangles
-Max Targets
-Screenshot (from Locations)
-Name (from Locations)
-SN ID (from Locations)
-Near the Ground (from Locations)
-Max Score
-Points Per Minute
-Targets Per Minute
-Workout Type
-Max Dodges
-Max Knee Strikes
+Processes airtable csv with focus on the Workouts view. 
+Location table is handled separately.
+The read-in csv expects the following columns:
+    Name                    Description                 Date
+    Name (from Intensity)   SN ID (from Intensity)      Chew Rating
+    Length                  Name (from Coach)           SN ID (from Coach)
+    Name (from Genre)       SN ID (from Genre)          Song Name (from Songs)
+    Artist (from Songs)     Length (from Songs)         SN ID (from Songs)
+    Spotify Link            SN ID                       Triangles
+    Max Targets             Screenshot (from Locations) Name (from Locations)
+    SN ID (from Locations)  Near the Ground (from Locations)
+    Max Score               Points Per Minute           Targets Per Minute
+    Workout Type            Max Dodges                  Max Knee Strikes
 '''
 data = {
     'workouts': {
@@ -71,22 +55,44 @@ data = {
         'filename' : 'STRETCH_WORKOUTS.csv'
     },
     'songs': {
+        'pk_set': set(),
         'items' : [],
         'headers' : [
-            'SN ID (from Songs)',' Song Name (from Songs)',
+            'SN ID (from Songs)','Song Name (from Songs)',
             'Artist (from Songs)', 'Length (from Songs)' ], 
         'primary_key': 'SN ID (from Songs)',
-        'filename' : 'STRETCH_WORKOUTS.csv'
+        'filename' : 'SONGS.csv'
+    },
+    'coaches': {
+        'pk_set': set(),
+        'items' : [],
+        'headers' : [
+            'SN ID (from Coach)',
+            'Name (from Coach)'], 
+        'primary_key': 'SN ID (from Coach)',
+        'filename' : 'COACHES.csv'
+    },
+    'genres': {
+        'pk_set': set(),
+        'items' : [],
+        'headers' : [
+            'SN ID (from Genre)',
+            'Name (from Genre)'], 
+        'primary_key': 'SN ID (from Genre)',
+        'filename' : 'GENRES.csv'
+    },
+    'intensities': {
+        'pk_set': set(),
+        'items' : [],
+        'headers' : [
+            'SN ID (from Intensity)',
+            'Name (from Intensity)'], 
+        'primary_key': 'SN ID (from Intensity)',
+        'filename' : 'INTENSITIES.csv'
     },
 }
 
-boxingWorkouts = []
-meditationWorkouts = []
-stretchingWorkouts = []
-genreList = []
-songMapList = []
 PATH = "./Datasets/ProcessedFiles/"
-
 
 def getHeaders():
     headers = {}
@@ -106,8 +112,36 @@ def runProcessor():
     with open('./Datasets/WORKOUTS_FLATTENED_11_29_2022.csv', mode='r', encoding="utf-8-sig") as csv_file:
         reader = csv.reader(csv_file, delimiter=',')
         next(reader, None)
-        for row in reader:            
+        for row in reader:
             processWorkoutType(row)
+            processTable(row,'songs')
+            processTable(row,'coaches')
+            processTable(row,'genres')
+            processTable(row,'intensities')
+
+def processTable(row, table):
+    # if no elems, skip
+    tablePk = data[table]['primary_key']
+    colTablePk = row[get(tablePk)]    
+    if colTablePk == '' : return
+    
+    # handle multiple elems in a row
+    tablePkList = [int(pk) for pk in colTablePk.split(',')]
+    numElems = len(tablePkList)
+    for i in range(numElems):
+        # skip if already encountered (from prev rows)
+        pk = tablePkList[i]
+        pkSet = data[table]['pk_set']
+        if pk in pkSet: continue
+        
+        # create entry, add elems to list (via headers), add pk to set  
+        tableElem = {}
+        headers = data[table]['headers']
+        for header in headers:
+            tableElem[header] = [item.strip() for item in row[get(header)].split(',')][i]
+        tableList = data[table]['items']
+        tableList.append(tableElem) 
+        pkSet.add(pk)
 
 def processWorkoutType(row):
     processRow(row, data['workouts']['items'], data['workouts']['headers'])
